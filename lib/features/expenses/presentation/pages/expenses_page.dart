@@ -23,7 +23,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Expenses'),
+        title: const Text('Reportes'),
       ),
       body: Consumer<ExpensesViewModel>(
         builder: (context, vm, _) {
@@ -44,7 +44,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                     const SizedBox(height: 16),
                     FilledButton(
                       onPressed: vm.load,
-                      child: const Text('Retry'),
+                      child: const Text('Reintentar'),
                     ),
                   ],
                 ),
@@ -52,7 +52,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
             );
           }
           if (vm.expenses.isEmpty) {
-            return const Center(child: Text('No expenses yet.'));
+            return const Center(child: Text('No hay gastos registrados.'));
           }
           return RefreshIndicator(
             onRefresh: vm.load,

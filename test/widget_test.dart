@@ -8,9 +8,9 @@ void main() {
     await initDependencies();
   });
 
-  testWidgets('Expenses screen shows app bar title', (WidgetTester tester) async {
+  testWidgets('Home shows reports tab by default', (WidgetTester tester) async {
     await tester.pumpWidget(const ReportExpencesApp());
     await tester.pumpAndSettle();
-    expect(find.text('Expenses'), findsOneWidget);
+    expect(find.text('Reportes'), findsWidgets);
   });
 }
