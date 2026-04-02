@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:report_expences_app/features/chat/presentation/view_models/chat_view_model.dart';
 import 'package:report_expences_app/features/expenses/data/datasources/expenses_data_source.dart';
 import 'package:report_expences_app/features/expenses/data/datasources/mock_expenses_data_source.dart';
 import 'package:report_expences_app/features/expenses/data/repositories/expenses_repository_impl.dart';
@@ -19,5 +20,6 @@ Future<void> initDependencies() async {
     ..registerFactory(() => GetExpensesUseCase(sl()))
     ..registerFactory(
       () => ExpensesViewModel(getExpenses: sl()),
-    );
+    )
+    ..registerFactory<ChatViewModel>(() => ChatViewModel());
 }
