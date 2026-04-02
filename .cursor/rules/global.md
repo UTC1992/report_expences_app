@@ -20,3 +20,4 @@ alwaysApply: true
 8. Centralized error handling and clear user-facing messages.
 9. New code must include at least tests in domain or viewmodel.
 10. Keep rules simple and global; implementation details should be handled with skills.
+11. Use TDD for each feature or modification or fix an error

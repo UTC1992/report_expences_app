@@ -4,6 +4,7 @@ import 'package:report_expences_app/core/di/injection_container.dart';
 import 'package:report_expences_app/core/presentation/pages/home_page.dart';
 import 'package:report_expences_app/features/chat/presentation/view_models/chat_view_model.dart';
 import 'package:report_expences_app/features/expenses/presentation/view_models/expenses_view_model.dart';
+import 'package:report_expences_app/features/settings/presentation/view_models/settings_view_model.dart';
 
 class ReportExpencesApp extends StatelessWidget {
   const ReportExpencesApp({super.key});
@@ -14,6 +15,7 @@ class ReportExpencesApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => sl<ExpensesViewModel>()),
         ChangeNotifierProvider(create: (_) => sl<ChatViewModel>()),
+        ChangeNotifierProvider(create: (_) => sl<SettingsViewModel>()),
       ],
       child: MaterialApp(
         title: 'Reportes de gastos',
