@@ -1,4 +1,5 @@
 import 'package:report_expences_app/core/error/failures.dart';
+import 'package:report_expences_app/core/network/api_exception.dart';
 import 'package:report_expences_app/core/result/result.dart';
 import 'package:report_expences_app/features/expenses/data/datasources/expenses_data_source.dart';
 import 'package:report_expences_app/features/expenses/data/mappers/expense_mapper.dart';
@@ -16,6 +17,8 @@ class ExpensesRepositoryImpl implements ExpensesRepository {
     try {
       final models = await _dataSource.fetchExpenses();
       return Success(models.map((m) => m.toEntity()).toList());
+    } on ApiException catch (e) {
+      return FailureResult(UnknownFailure(e.message));
     } catch (e) {
       return FailureResult(UnknownFailure(e.toString()));
     }
