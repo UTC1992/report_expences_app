@@ -4,6 +4,7 @@ import 'package:http/testing.dart';
 import 'package:report_expences_app/core/network/api_exception.dart';
 import 'package:report_expences_app/core/result/result.dart';
 import 'package:report_expences_app/features/expenses/data/datasources/api_expenses_data_source.dart';
+import 'package:report_expences_app/features/expenses/domain/entities/expense_date_range_filter.dart';
 import 'package:report_expences_app/features/settings/domain/entities/app_settings.dart';
 import 'package:report_expences_app/features/settings/domain/repositories/settings_repository.dart';
 
@@ -22,8 +23,14 @@ class _FixedSettingsRepository implements SettingsRepository {
 
 void main() {
   test('fetchExpenses parses items from API JSON', () async {
+    final range = ExpenseDateRangeFilter(
+      start: DateTime(2026, 3, 1),
+      end: DateTime(2026, 3, 31),
+    );
     final client = MockClient((request) async {
-      expect(request.url.toString(), 'https://api.test/api/v1/expenses');
+      expect(request.url.path, '/api/v1/expenses');
+      expect(request.url.queryParameters['startDate'], '2026-03-01');
+      expect(request.url.queryParameters['endDate'], '2026-03-31');
       return http.Response(
         '''
         {
@@ -57,7 +64,7 @@ void main() {
       ),
     );
 
-    final list = await ds.fetchExpenses();
+    final list = await ds.fetchExpenses(range);
     expect(list, hasLength(1));
     expect(list.single.title, 'Lunch');
     expect(list.single.amount, 10.5);
@@ -72,7 +79,12 @@ void main() {
     );
 
     expect(
-      ds.fetchExpenses,
+      () => ds.fetchExpenses(
+            ExpenseDateRangeFilter(
+              start: DateTime(2026, 1, 1),
+              end: DateTime(2026, 1, 31),
+            ),
+          ),
       throwsA(isA<ApiException>().having(
         (e) => e.message,
         'message',

@@ -6,6 +6,7 @@ import 'package:report_expences_app/core/network/api_uri_builder.dart';
 import 'package:report_expences_app/core/result/result.dart';
 import 'package:report_expences_app/features/expenses/data/datasources/expenses_data_source.dart';
 import 'package:report_expences_app/features/expenses/data/models/expense_model.dart';
+import 'package:report_expences_app/features/expenses/domain/entities/expense_date_range_filter.dart';
 import 'package:report_expences_app/features/settings/domain/repositories/settings_repository.dart';
 
 class ApiExpensesDataSource implements ExpensesDataSource {
@@ -19,7 +20,7 @@ class ApiExpensesDataSource implements ExpensesDataSource {
   final SettingsRepository _settingsRepository;
 
   @override
-  Future<List<ExpenseModel>> fetchExpenses() async {
+  Future<List<ExpenseModel>> fetchExpenses(ExpenseDateRangeFilter range) async {
     final settingsResult = await _settingsRepository.load();
     final settings = switch (settingsResult) {
       Success(:final data) => data,
@@ -35,7 +36,12 @@ class ApiExpensesDataSource implements ExpensesDataSource {
       );
     }
 
-    final uri = ApiUriBuilder.build(base, '/expenses');
+    final uri = ApiUriBuilder.build(base, '/expenses').replace(
+      queryParameters: {
+        'startDate': _formatApiDate(range.startInclusive),
+        'endDate': _formatApiDate(range.endInclusive),
+      },
+    );
     final response = await _httpClient.get(uri, headers: _jsonHeaders);
 
     if (response.statusCode < 200 || response.statusCode >= 300) {
@@ -53,6 +59,13 @@ class ApiExpensesDataSource implements ExpensesDataSource {
               Map<String, dynamic>.from(e as Map),
             ))
         .toList();
+  }
+
+  static String _formatApiDate(DateTime d) {
+    final y = d.year.toString().padLeft(4, '0');
+    final m = d.month.toString().padLeft(2, '0');
+    final day = d.day.toString().padLeft(2, '0');
+    return '$y-$m-$day';
   }
 
   Map<String, String> get _jsonHeaders => {
