@@ -8,14 +8,17 @@ class SettingsSecureDataSourceImpl implements SettingsSecureDataSource {
 
   static const _serverKey = 'settings_server_base_url';
   static const _llmKey = 'settings_llm_api_key';
+  static const _llmProviderKey = 'settings_llm_provider';
 
   @override
   Future<Map<String, String>> readAll() async {
     final server = await _storage.read(key: _serverKey) ?? '';
     final llm = await _storage.read(key: _llmKey) ?? '';
+    final provider = await _storage.read(key: _llmProviderKey) ?? '';
     return {
       'serverBaseUrl': server,
       'llmApiKey': llm,
+      'llmProvider': provider,
     };
   }
 
@@ -23,8 +26,10 @@ class SettingsSecureDataSourceImpl implements SettingsSecureDataSource {
   Future<void> writeAll({
     required String serverBaseUrl,
     required String llmApiKey,
+    required String llmProvider,
   }) async {
     await _storage.write(key: _serverKey, value: serverBaseUrl);
     await _storage.write(key: _llmKey, value: llmApiKey);
+    await _storage.write(key: _llmProviderKey, value: llmProvider);
   }
 }

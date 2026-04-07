@@ -39,6 +39,7 @@ class ChatRepositoryImpl implements ChatRepository {
           final body = await _remoteDataSource.postProcessExpense(
             baseUrl: base,
             text: text,
+            provider: data.llmProvider.apiValue,
             apiKey: apiKey.isEmpty ? null : apiKey,
           );
           final map = jsonDecode(body) as Map<String, dynamic>;

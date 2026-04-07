@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:report_expences_app/features/settings/domain/entities/llm_provider.dart';
 import 'package:report_expences_app/features/settings/presentation/view_models/settings_view_model.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -13,6 +14,35 @@ class _SettingsPageState extends State<SettingsPage> {
   final TextEditingController _serverUrlController = TextEditingController();
   final TextEditingController _llmTokenController = TextEditingController();
   bool _obscureToken = true;
+  LlmProvider _selectedLlm = LlmProvider.openai;
+
+  /// Same outline, padding and density for URL, proveedor y token.
+  InputDecoration _outlineField(
+    BuildContext context, {
+    required String label,
+    String? hintText,
+    Widget? suffixIcon,
+  }) {
+    final theme = Theme.of(context);
+    final outline = OutlineInputBorder(
+      borderSide: BorderSide(color: theme.colorScheme.outline),
+    );
+    return InputDecoration(
+      labelText: label,
+      hintText: hintText,
+      border: outline,
+      enabledBorder: outline,
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: theme.colorScheme.primary,
+          width: 2,
+        ),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      isDense: true,
+      suffixIcon: suffixIcon,
+    );
+  }
 
   @override
   void initState() {
@@ -24,6 +54,9 @@ class _SettingsPageState extends State<SettingsPage> {
       if (!mounted) return;
       _serverUrlController.text = vm.serverBaseUrl;
       _llmTokenController.text = vm.llmApiKey;
+      setState(() {
+        _selectedLlm = vm.llmProvider;
+      });
     });
   }
 
@@ -39,6 +72,7 @@ class _SettingsPageState extends State<SettingsPage> {
     await vm.save(
       serverBaseUrl: _serverUrlController.text,
       llmApiKey: _llmTokenController.text,
+      llmProvider: _selectedLlm,
     );
     if (!mounted) return;
     if (vm.errorMessage == null) {
@@ -74,10 +108,11 @@ class _SettingsPageState extends State<SettingsPage> {
                 controller: _serverUrlController,
                 keyboardType: TextInputType.url,
                 autocorrect: false,
-                decoration: const InputDecoration(
-                  labelText: 'URL del servidor',
+                style: Theme.of(context).textTheme.bodyLarge,
+                decoration: _outlineField(
+                  context,
+                  label: 'URL del servidor',
                   hintText: 'https://api.tudominio.com',
-                  border: OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 20),
@@ -86,15 +121,49 @@ class _SettingsPageState extends State<SettingsPage> {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 8),
+              InputDecorator(
+                decoration: _outlineField(
+                  context,
+                  label: 'Proveedor',
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<LlmProvider>(
+                    value: _selectedLlm,
+                    isDense: true,
+                    isExpanded: true,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                    padding: EdgeInsets.zero,
+                    items: [
+                      for (final p in LlmProvider.values)
+                        DropdownMenuItem(
+                          value: p,
+                          child: Text(p.displayLabel),
+                        ),
+                    ],
+                    onChanged: (value) {
+                      if (value == null) return;
+                      setState(() => _selectedLlm = value);
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+               Text(
+                'Token del LLM',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 8),
               TextField(
                 controller: _llmTokenController,
                 obscureText: _obscureToken,
                 autocorrect: false,
-                decoration: InputDecoration(
-                  labelText: 'Token para el LLM',
-                  border: const OutlineInputBorder(),
+                style: Theme.of(context).textTheme.bodyLarge,
+                decoration: _outlineField(
+                  context,
+                  label: 'Token para el LLM',
                   suffixIcon: IconButton(
                     tooltip: _obscureToken ? 'Mostrar' : 'Ocultar',
+                    visualDensity: VisualDensity.compact,
                     onPressed: () {
                       setState(() {
                         _obscureToken = !_obscureToken;

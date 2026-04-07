@@ -5,5 +5,6 @@ abstract class SettingsSecureDataSource {
   Future<void> writeAll({
     required String serverBaseUrl,
     required String llmApiKey,
+    required String llmProvider,
   });
 }

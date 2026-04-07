@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:report_expences_app/core/result/result.dart';
 import 'package:report_expences_app/features/settings/domain/entities/app_settings.dart';
+import 'package:report_expences_app/features/settings/domain/entities/llm_provider.dart';
 import 'package:report_expences_app/features/settings/domain/repositories/settings_repository.dart';
 import 'package:report_expences_app/features/settings/domain/use_cases/get_app_settings_use_case.dart';
 import 'package:report_expences_app/features/settings/domain/use_cases/save_app_settings_use_case.dart';
@@ -29,6 +30,7 @@ void main() {
       loadValue: const AppSettings(
         serverBaseUrl: 'https://api.test',
         llmApiKey: 'secret',
+        llmProvider: LlmProvider.openai,
       ),
     );
     final vm = SettingsViewModel(
@@ -41,6 +43,7 @@ void main() {
     expect(vm.isLoading, isFalse);
     expect(vm.serverBaseUrl, 'https://api.test');
     expect(vm.llmApiKey, 'secret');
+    expect(vm.llmProvider, LlmProvider.openai);
     expect(vm.errorMessage, isNull);
   });
 

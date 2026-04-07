@@ -1,6 +1,7 @@
 import 'package:report_expences_app/core/error/failures.dart';
 import 'package:report_expences_app/core/result/result.dart';
 import 'package:report_expences_app/features/settings/domain/entities/app_settings.dart';
+import 'package:report_expences_app/features/settings/domain/entities/llm_provider.dart';
 import 'package:report_expences_app/features/settings/domain/repositories/settings_repository.dart';
 
 class SaveAppSettingsUseCase {
@@ -11,6 +12,7 @@ class SaveAppSettingsUseCase {
   Future<Result<AppSettings>> call({
     required String serverBaseUrl,
     required String llmApiKey,
+    LlmProvider llmProvider = LlmProvider.openai,
   }) async {
     final url = serverBaseUrl.trim();
     final key = llmApiKey.trim();
@@ -21,7 +23,11 @@ class SaveAppSettingsUseCase {
       );
     }
 
-    final settings = AppSettings(serverBaseUrl: url, llmApiKey: key);
+    final settings = AppSettings(
+      serverBaseUrl: url,
+      llmApiKey: key,
+      llmProvider: llmProvider,
+    );
     return _repository.save(settings);
   }
 

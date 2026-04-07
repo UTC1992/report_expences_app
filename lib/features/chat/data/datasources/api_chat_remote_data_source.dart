@@ -15,12 +15,13 @@ class ApiChatRemoteDataSource implements ChatRemoteDataSource {
   Future<String> postProcessExpense({
     required String baseUrl,
     required String text,
+    required String provider,
     String? apiKey,
   }) async {
     final uri = ApiUriBuilder.build(baseUrl, '/chat/process_expense');
     final payload = <String, dynamic>{
       'text': text,
-      'provider': 'openai',
+      'provider': provider,
       if (apiKey != null && apiKey.isNotEmpty) 'apiKey': apiKey,
     };
 

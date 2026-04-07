@@ -8,6 +8,7 @@ class FakeSettingsSecureDataSource implements SettingsSecureDataSource {
     return {
       'serverBaseUrl': _values['serverBaseUrl'] ?? '',
       'llmApiKey': _values['llmApiKey'] ?? '',
+      'llmProvider': _values['llmProvider'] ?? '',
     };
   }
 
@@ -15,8 +16,10 @@ class FakeSettingsSecureDataSource implements SettingsSecureDataSource {
   Future<void> writeAll({
     required String serverBaseUrl,
     required String llmApiKey,
+    required String llmProvider,
   }) async {
     _values['serverBaseUrl'] = serverBaseUrl;
     _values['llmApiKey'] = llmApiKey;
+    _values['llmProvider'] = llmProvider;
   }
 }
